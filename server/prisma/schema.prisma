@@ -1,0 +1,46 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Deck {
+  cards     Card[]
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String   @unique
+  updatedAt DateTime @updatedAt
+}
+
+model Card {
+  answer    String
+  createdAt DateTime @default(now())
+  deck      Deck?    @relation(fields: [deckId], references: [id])
+  deckId    String?
+  id        String   @id @default(cuid())
+  question  String
+  tag       Tag[]
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  cards     Card[]
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
